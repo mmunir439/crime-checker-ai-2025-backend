@@ -5,21 +5,18 @@ const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('./utils/cloudinary');
 const connectDB = require('./utils/db');
-
+const criminalRoutes = require('./routes/criminal');
 const app = express();
 const port = process.env.PORT || 3000;
-
 // Connect to MongoDB
 connectDB();
 
 // Middleware
 app.use(express.json());
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true,
+}));
 
 // Multer Cloudinary storage setup
 const storage = new CloudinaryStorage({
@@ -30,18 +27,11 @@ const storage = new CloudinaryStorage({
   },
 });
 const upload = multer({ storage: storage });
-
-// Routes
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.use('/criminals', criminalRoutes);
+app.get('/iftikhar', (req, res) => {
+  res.send('I am working web developerment');
 });
-
-// Image upload route (up to 2 images)
-app.post('/upload-images', upload.array('images', 2), (req, res) => {
-  res.json({ files: req.files });
-});
-
 // Start server
 app.listen(port, () => {
-  console.log(`app listening on port ${port}`);
+  console.log(`App listening on port ${port}`);
 });
