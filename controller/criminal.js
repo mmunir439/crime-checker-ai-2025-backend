@@ -1,7 +1,6 @@
 const cloudinary = require('../utils/cloudinary').cloudinary;
 const fs = require('fs');
 const Criminal = require('../models/criminal'); // Make sure you import your model
-
 exports.createCriminal = async (req, res) => {
   try {
     const { name, cnic, crimeType, age } = req.body;

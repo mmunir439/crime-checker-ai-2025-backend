@@ -6,6 +6,7 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('./utils/cloudinary');
 const connectDB = require('./utils/db');
 const criminalRoutes = require('./routes/criminal');
+const userRoutes = require('./routes/user');
 const app = express();
 const port = process.env.PORT || 3000;
 // Connect to MongoDB
@@ -28,7 +29,8 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage: storage });
 app.use('/criminals', criminalRoutes);
-app.get('/iftikhar', (req, res) => {
+app.use('/user', userRoutes);
+app.get('/', (req, res) => {
   res.send('I am working web developerment');
 });
 // Start server
