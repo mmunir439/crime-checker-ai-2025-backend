@@ -9,14 +9,11 @@ const transporter = nodemailer.createTransport({
 });
 
 // optionally export a function to send emails
-const sendEmail = async (toEmail, subject, html) => {
+exports.sendEmail = async (toEmail, subject, html) => {
   await transporter.sendMail({
-    from: `"My App" <${process.env.EMAIL_USER}>`,
+    from: `"Criminal App" <${process.env.EMAIL_USER}>`,
     to: toEmail,
     subject: subject,
     html: html,
   });
-};
-module.exports = {
-  sendEmail,
 };

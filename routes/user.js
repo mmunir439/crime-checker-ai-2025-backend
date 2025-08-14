@@ -7,4 +7,6 @@ router.get("/", (req, res) => {
 router.post('/registeruser', userController.registeruser);
 router.get('/getuser', userController.getuser);
 router.post('/loginuser', userController.loginuser);
+router.put('/updateuser/:email', userController.updateuser);
+router.delete('/deleteuser/:email', userController.deleteuser);
 module.exports = router;

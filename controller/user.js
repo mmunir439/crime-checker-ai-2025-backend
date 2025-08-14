@@ -36,3 +36,35 @@ exports.getuser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+exports.updateuser=async (req,res,next)=>{
+  try{
+    const { username, email, password } = req.body;
+    const updatedUser = await User.findOneAndUpdate(
+      { email: req.params.email },
+      { username, email, password },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    else{
+      return res.status(200).json({ message: "User updated successfully" });
+    }
+    res.status(200).json(updatedUser);
+  }
+  catch(error){
+    next(error);
+  }
+}
+exports.deleteuser=async (req,res,next)=>{
+  try{
+    const deletedUser = await User.findOneAndDelete({ email: req.params.email });
+    if (!deletedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ message: "User deleted successfully" });
+  }
+  catch(error){
+    next(error);
+  }
+}

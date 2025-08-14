@@ -28,15 +28,46 @@ exports.createCriminal = async (req, res,next) => {
     next(error);
   }
 };
-exports.getCriminalByCNIC = async (req, res,next) => {
+exports.updateCriminal = async (req, res, next) => {
+  try {
+    const { name, cnic, crimeType, age } = req.body;
+    const updatedCriminal = await Criminal.findOneAndUpdate(
+      { cnic: req.params.cnic },
+      { name, crimeType, age },
+      { new: true }
+    );
+    if (!updatedCriminal) {
+      return res.status(404).json({ error: "Criminal not found" });
+    }
+    res.status(200).json(updatedCriminal);
+  } catch (error) {
+    console.error("Error updating criminal:", error);
+    next(error);
+  }
+};
+exports.deleteCriminalByCNIC=async (req,res,next)=>{
   try{
-     const criminal = await Criminal.findOne({ cnic: req.params.cnic });
-if (!criminal) {
-  return res.status(404).json({ error: "Criminal not found" });
-}
-res.status(200).json(criminal);
+    const getcriminial= await Criminal.findOneAndDelete({ cnic: req.params.cnic });
+    if(!getcriminial){
+      return res.status(404).json({ error: "Criminal not found" });
+    }
+    else{
+return res.status(200).json({ message: "Criminal Deleted Successfully" });
+    }
   }
   catch(error){
+    console.error("Error deleting criminal:", error);
+    next(error);
+  }
+}
+exports.getCriminalByCNIC = async (req, res, next) => {
+  try {
+    const criminal = await Criminal.findOne({ cnic: req.params.cnic });
+    if (!criminal) {
+      return res.status(404).json({ error: "Criminal not found" });
+    }
+    res.status(200).json(criminal);
+  } catch (error) {
     console.error("Error fetching criminal:", error);
     next(error);
   }
