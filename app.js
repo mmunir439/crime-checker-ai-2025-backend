@@ -7,19 +7,18 @@ const cloudinary = require('./utils/cloudinary');
 const connectDB = require('./utils/db');
 const criminalRoutes = require('./routes/criminal');
 const userRoutes = require('./routes/user');
+const {role,computer,math,handleerror}=require("./middleware/practiceme");
 const app = express();
 const port = process.env.PORT || 3000;
 // Connect to MongoDB
 connectDB();
-
+ 
 // Middleware
 app.use(express.json());
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,
 }));
-
-// Multer Cloudinary storage setup
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
@@ -30,9 +29,11 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 app.use('/criminals', criminalRoutes);
 app.use('/user', userRoutes);
-app.get('/', (req, res) => {
+app.use(role);// this is the global middle ware that applies to all incoming requests
+app.get('/',computer,math,(req, res) => {// route specifce middle ware 
   res.send('I am working web developerment');
 });
+app.use(handleerror);
 // Start server
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

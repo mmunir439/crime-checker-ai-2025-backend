@@ -1,7 +1,8 @@
 const cloudinary = require('../utils/cloudinary').cloudinary;
 const fs = require('fs');
+const fetch = require('node-fetch');
 const Criminal = require('../models/criminal'); // Make sure you import your model
-exports.createCriminal = async (req, res) => {
+exports.createCriminal = async (req, res,next) => {
   try {
     const { name, cnic, crimeType, age } = req.body;
     const localPhotoPath = req.file.path;
@@ -24,10 +25,19 @@ exports.createCriminal = async (req, res) => {
 
     res.status(201).json(savedCriminal);
   } catch (error) {
-    if (error.code === 11000 && error.keyPattern && error.keyPattern.cnic) {
-      // Duplicate CNIC error
-      return res.status(400).json({ error: "This CNIC is already registered." });
-    }
-    res.status(400).json({ error: error.message });
+    next(error);
+  }
+};
+exports.getCriminalByCNIC = async (req, res,next) => {
+  try{
+     const criminal = await Criminal.findOne({ cnic: req.params.cnic });
+if (!criminal) {
+  return res.status(404).json({ error: "Criminal not found" });
+}
+res.status(200).json(criminal);
+  }
+  catch(error){
+    console.error("Error fetching criminal:", error);
+    next(error);
   }
 };
