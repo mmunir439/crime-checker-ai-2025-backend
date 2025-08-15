@@ -1,11 +1,13 @@
 const User=require("../models/user");
 const { generateToken } = require('../utils/jwt');
+const {hashPassword,comparePassword}=require('../utils/hash');
 const { sendEmail } = require('../utils/email');
 const bcrypt = require('bcrypt');
 exports.registeruser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const newUser = new User({ username, email, password });
+    const hashedPassword = await hashPassword(password);
+    const newUser = new User({ username, email, password: hashedPassword });
     const savedUser = await newUser.save();
 
     // Send welcome email
@@ -42,7 +44,7 @@ exports.loginuser = async (req, res, next) => {
     if (!user) {
       return res.json({ message: "please go and register because you don't have account" });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
+const isMatch = await comparePassword(password, user.password);
     if (isMatch) {
       const token = generateToken({
         userId: user._id,
