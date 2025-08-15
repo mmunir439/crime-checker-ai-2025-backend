@@ -8,6 +8,7 @@ const connectDB = require('./utils/db');
 const criminalRoutes = require('./routes/criminal');
 const userRoutes = require('./routes/user');
 const {role,computer,math,handleerror}=require("./middleware/practiceme");
+const { requireAuth } = require('./middleware/Auth');
 const app = express();
 const port = process.env.PORT || 3000;
 // Connect to MongoDB
@@ -30,7 +31,7 @@ const upload = multer({ storage: storage });
 app.use('/criminals', criminalRoutes);
 app.use('/user', userRoutes);
 app.use(role);// this is the global middle ware that applies to all incoming requests
-app.get('/',computer,math,(req, res) => {// route specifce middle ware 
+app.get('/',computer,math,requireAuth,(req, res) => {// route specifce middle ware
   res.send('I am working web developerment');
 });
 app.use(handleerror);
