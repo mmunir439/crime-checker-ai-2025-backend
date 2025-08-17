@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
+const PORT = process.env.PORT || 5000;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('./utils/cloudinary');
 const connectDB = require('./utils/db');
@@ -39,6 +40,6 @@ app.get("/", (req, res) => {
 });
 app.use(handleerror);
 // Start server
-app.listen(process.env.PORT || 8080, () => {
+app.listen(PORT, () => {
   console.log("Server is running...");
 });
