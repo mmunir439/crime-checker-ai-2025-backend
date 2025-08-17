@@ -34,7 +34,7 @@ app.use('/user', userRoutes);
 app.get("/", (req, res) => {
   res.send("Welcome to the Crime Checker AI Backend");
 });
-app.use(handleerror);
+// app.use(handleerror);
 // Start server
 app.listen(PORT, () => {
   console.log("Server is running...");
