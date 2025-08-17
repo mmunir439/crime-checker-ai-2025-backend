@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('./utils/cloudinary');
 const connectDB = require('./utils/db');
@@ -31,10 +31,6 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 app.use('/criminals', criminalRoutes);
 app.use('/user', userRoutes);
-app.use(role);// this is the global middle ware that applies to all incoming requests
-// app.get('/',computer,math,requireAuth,(req, res) => {// route specifce middle ware
-//   res.send('I am working web developerment');
-// });
 app.get("/", (req, res) => {
   res.send("Welcome to the Crime Checker AI Backend");
 });
