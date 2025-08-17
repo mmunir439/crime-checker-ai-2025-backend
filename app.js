@@ -11,7 +11,6 @@ const userRoutes = require('./routes/user');
 const {role,computer,math,handleerror}=require("./middleware/practiceme");
 const { requireAuth } = require('./middleware/Auth');
 const app = express();
-const port = process.env.PORT || 3000;
 // Connect to MongoDB
 connectDB();
  
@@ -34,8 +33,6 @@ app.use('/user', userRoutes);
 app.get("/", (req, res) => {
   res.send("Welcome to the Crime Checker AI Backend");
 });
-// app.use(handleerror);
-// Start server
 app.listen(PORT, () => {
   console.log("Server is running...");
 });
