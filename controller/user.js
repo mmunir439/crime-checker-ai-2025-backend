@@ -5,9 +5,9 @@ const { sendEmail } = require('../utils/email');
 const bcrypt = require('bcrypt');
 exports.registeruser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, cnic } = req.body;
     const hashedPassword = await hashPassword(password);
-    const newUser = new User({ username, email, password: hashedPassword });
+    const newUser = new User({ username, email, password: hashedPassword, cnic });
     const savedUser = await newUser.save();
 
     // Send welcome email
@@ -39,7 +39,7 @@ exports.registeruser = async (req, res) => {
 };
 exports.loginuser = async (req, res, next) => { 
   try {
-    const { email, password } = req.body;
+    const { email, password} = req.body;
     const user = await User.findOne({ email });
     if (!user) {
       return res.json({ message: "please go and register because you don't have account" });

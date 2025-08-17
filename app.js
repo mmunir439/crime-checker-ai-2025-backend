@@ -31,8 +31,11 @@ const upload = multer({ storage: storage });
 app.use('/criminals', criminalRoutes);
 app.use('/user', userRoutes);
 app.use(role);// this is the global middle ware that applies to all incoming requests
-app.get('/',computer,math,requireAuth,(req, res) => {// route specifce middle ware
-  res.send('I am working web developerment');
+// app.get('/',computer,math,requireAuth,(req, res) => {// route specifce middle ware
+//   res.send('I am working web developerment');
+// });
+app.get("/", (req, res) => {
+  res.send("Welcome to the Crime Checker AI Backend");
 });
 app.use(handleerror);
 // Start server
