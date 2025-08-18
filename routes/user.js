@@ -8,6 +8,6 @@ router.get("/", (req, res) => {
 router.post('/registeruser', userController.registeruser);
 router.get('/getuser', requireAuth, userController.getuser);
 router.post('/loginuser', userController.loginuser);
-router.put('/updateuser/:email', requireAuth, userController.updateuser);
-router.delete('/deleteuser/:email', requireAuth, userController.deleteuser);
+router.put('/updateuser', requireAuth, userController.updateuser);
+router.delete('/deleteuser', requireAuth, userController.deleteuser);
 module.exports = router;

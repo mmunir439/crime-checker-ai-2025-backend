@@ -30,16 +30,24 @@ exports.createCriminal = async (req, res,next) => {
 };
 exports.updateCriminal = async (req, res, next) => {
   try {
-    const { name, cnic, crimeType, age } = req.body;
+    const { name, crimeType, age } = req.body;
+    const cnic = req.params.cnic;
+
+    if (!cnic) {
+      return res.status(400).json({ error: "CNIC is required to update a criminal" });
+    }
+
     const updatedCriminal = await Criminal.findOneAndUpdate(
-      { cnic: req.params.cnic },
+      { cnic },
       { name, crimeType, age },
       { new: true }
     );
+
     if (!updatedCriminal) {
       return res.status(404).json({ error: "Criminal not found" });
     }
-    res.status(200).json(updatedCriminal);
+
+    res.status(200).json({ message: "Criminal updated successfully", updatedCriminal });
   } catch (error) {
     console.error("Error updating criminal:", error);
     next(error);
@@ -76,3 +84,15 @@ exports.getCriminalByCNIC = async (req, res, next) => {
     next(error);
   }
 };
+exports.getallcriminal = async (req, res, next) => {
+  try {
+    const criminals = await Criminal.find();
+    if (!criminals.length) {
+      return res.status(404).json({ error: "No criminals found" });
+    }
+    res.status(200).json(criminals);
+  } catch (error) {
+    console.error("Error fetching criminals:", error);
+    next(error);
+  }
+}

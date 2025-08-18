@@ -39,24 +39,35 @@ exports.registeruser = async (req, res) => {
 };
 exports.loginuser = async (req, res, next) => { 
   try {
-    const { email, password} = req.body;
+    const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
       return res.json({ message: "please go and register because you don't have account" });
     }
-const isMatch = await comparePassword(password, user.password);
+    const isMatch = await comparePassword(password, user.password);
     if (isMatch) {
-   const payload = {
-  userId: user._id,
-  email: user.email,
-  role: user.role,
-  username: user.username,
-  cnic: user.cnic // Include cnic here
-};
-console.log("Payload before generating token:", payload);
+      const payload = {
+        userId: user._id,
+        email: user.email,
+        role: user.role,
+        username: user.username,
+        cnic: user.cnic // Include cnic here
+      };
+      console.log("Payload before generating token:", payload);
 
-const token = generateToken(payload);
-      return res.json({ message: "login successfully", token });
+      const token = generateToken(payload);
+      // Send token and user information in the response
+      return res.json({
+        message: "login successfully",
+        token,
+        user: {
+          userId: user._id,
+          email: user.email,
+          role: user.role,
+          username: user.username,
+          cnic: user.cnic
+        }
+      });
     } else {
       return res.json({ message: "invalid email or password" });
     }
@@ -81,33 +92,35 @@ exports.getuser = async (req, res, next) => {
 };
 exports.updateuser = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password } = req.body; // Extract email from the request body
     const updatedUser = await User.findOneAndUpdate(
-      { email: req.params.email },
+      { email }, // Use email from the request body
       { username, email, password },
       { new: true }
     );
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
-    }
-    else{
+    } else {
       return res.status(200).json({ message: "User updated successfully" });
     }
-    res.status(200).json(updatedUser);
-  }
-  catch(error){
+  } catch (error) {
     next(error);
   }
-}
-exports.deleteuser=async (req,res,next)=>{
-  try{
-    const deletedUser = await User.findOneAndDelete({ email: req.params.email });
+};
+exports.deleteuser = async (req, res, next) => {
+  try {
+    const email = req.user.email; // Extract email from the token
+    if (!email) {
+      return res.status(400).json({ error: "Email is missing in the token" });
+    }
+
+    const deletedUser = await User.findOneAndDelete({ email });
     if (!deletedUser) {
       return res.status(404).json({ error: "User not found" });
     }
+
     res.status(200).json({ message: "User deleted successfully" });
-  }
-  catch(error){
+  } catch (error) {
     next(error);
   }
-}
+};
