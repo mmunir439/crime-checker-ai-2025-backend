@@ -62,7 +62,11 @@ return res.status(200).json({ message: "Criminal Deleted Successfully" });
 }
 exports.getCriminalByCNIC = async (req, res, next) => {
   try {
-    const criminal = await Criminal.findOne({ cnic: req.params.cnic });
+    const cnic = req.user.cnic; // Extract cnic from token
+    if (!cnic) {
+      return res.status(400).json({ error: "CNIC is missing in the token" });
+    }
+    const criminal = await Criminal.findOne({ cnic });
     if (!criminal) {
       return res.status(404).json({ error: "Criminal not found" });
     }

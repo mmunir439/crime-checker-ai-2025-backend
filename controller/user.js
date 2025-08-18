@@ -46,12 +46,16 @@ exports.loginuser = async (req, res, next) => {
     }
 const isMatch = await comparePassword(password, user.password);
     if (isMatch) {
-      const token = generateToken({
-        userId: user._id,
-        email: user.email,
-        role: user.role,
-        username: user.username
-      });
+   const payload = {
+  userId: user._id,
+  email: user.email,
+  role: user.role,
+  username: user.username,
+  cnic: user.cnic // Include cnic here
+};
+console.log("Payload before generating token:", payload);
+
+const token = generateToken(payload);
       return res.json({ message: "login successfully", token });
     } else {
       return res.json({ message: "invalid email or password" });
@@ -60,16 +64,23 @@ const isMatch = await comparePassword(password, user.password);
     next(error);
   }
 };
-exports.getuser = async (req, res) => {
+exports.getuser = async (req, res, next) => {
   try {
-    const seeuserdetails = await User.find();
+    console.log(req.user); // Debugging: Check if req.user contains cnic
+    if (!req.user || !req.user.cnic) {
+      return res.status(400).json({ error: "CNIC is missing in the token" });
+    }
+    const seeuserdetails = await User.find({ cnic: req.user.cnic });
+    if (!seeuserdetails.length) {
+      return res.status(404).json({ error: "No user found with this CNIC" });
+    }
     res.status(200).json(seeuserdetails);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
-exports.updateuser=async (req,res,next)=>{
-  try{
+exports.updateuser = async (req, res, next) => {
+  try {
     const { username, email, password } = req.body;
     const updatedUser = await User.findOneAndUpdate(
       { email: req.params.email },
