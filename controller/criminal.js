@@ -94,5 +94,36 @@ exports.getallcriminal = async (req, res, next) => {
   } catch (error) {
     console.error("Error fetching criminals:", error);
     next(error);
+
   }
 }
+exports.verifyCriminalByCNIC = async (req, res, next) => {
+  try {
+    const { cnic } = req.body; // Extract CNIC from the request body
+
+    if (!cnic) {
+      return res.status(400).json({ error: "CNIC is required to verify a criminal." });
+    }
+
+    // Find the criminal by CNIC
+    const criminal = await Criminal.findOne({ cnic });
+
+    if (!criminal) {
+      return res.status(404).json({ error: "No criminal found with this CNIC." });
+    }
+
+    res.status(200).json({
+      message: "Criminal found.",
+      criminal: {
+        name: criminal.name,
+        cnic: criminal.cnic,
+        crimeType: criminal.crimeType,
+        age: criminal.age,
+        photo: criminal.photo,
+      },
+    });
+  } catch (error) {
+    console.error("Error verifying criminal by CNIC:", error);
+    res.status(500).json({ error: "An error occurred while verifying the criminal." });
+  }
+};

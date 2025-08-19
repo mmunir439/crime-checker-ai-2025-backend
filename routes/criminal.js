@@ -10,6 +10,7 @@ const localUpload = require('../utils/localUpload');
 router.post('/addcriminaldata', requireAuth, isRole, localUpload.single('photo'), criminalController.createCriminal);
 router.get('/getCriminalByCNIC', requireAuth, criminalController.getCriminalByCNIC);
 router.get('/', criminalController.getallcriminal);
+router.post('/verifyCriminalByCNIC', criminalController.verifyCriminalByCNIC);
 router.put('/updateCriminal/:cnic', requireAuth, isRole, criminalController.updateCriminal);
 router.delete('/deleteCriminalByCNIC/:cnic', requireAuth, isRole, criminalController.deleteCriminalByCNIC);
 module.exports = router;

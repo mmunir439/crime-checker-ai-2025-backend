@@ -8,6 +8,7 @@ const cloudinary = require('./utils/cloudinary');
 const connectDB = require('./utils/db');
 const criminalRoutes = require('./routes/criminal');
 const userRoutes = require('./routes/user');
+const contact=require("./routes/contact");
 const {role,computer,math,handleerror}=require("./middleware/practiceme");
 const { requireAuth } = require('./middleware/Auth');
 const app = express();
@@ -30,6 +31,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 app.use('/criminals', criminalRoutes);
 app.use('/user', userRoutes);
+app.use('/contact',requireAuth, contact);
 app.get("/", (req, res) => {
   res.send("Welcome to the Crime Checker AI Backend");
 });
